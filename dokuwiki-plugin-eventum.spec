@@ -3,7 +3,7 @@ Summary:	DokuWiki Eventum Plugin
 Summary(pl.UTF-8):	Wtyczka Include (dołączania) dla Eventum
 Name:		dokuwiki-plugin-%{plugin}
 Version:	20080303
-Release:	0.1
+Release:	0.2
 License:	GPL v2
 Group:		Applications/WWW
 Requires:	dokuwiki >= 20070626
@@ -31,6 +31,10 @@ install -d $RPM_BUILD_ROOT%{plugindir}
 cp -a . $RPM_BUILD_ROOT%{plugindir}
 find $RPM_BUILD_ROOT%{plugindir} -name CVS | xargs -r rm -rf
 
+# link issue -> eventum icon
+install -d $RPM_BUILD_ROOT%{dokudir}/lib/images/interwiki
+ln -s eventum.gif $RPM_BUILD_ROOT%{dokudir}/lib/images/interwiki/issue.gif
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -41,3 +45,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{plugindir}/lang
 %dir %{plugindir}/lang/en
 %{plugindir}/lang/en/lang.php
+
+# [[issue>XXX]] icon
+%{dokudir}/lib/images/interwiki/issue.gif
