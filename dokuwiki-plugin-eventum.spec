@@ -2,11 +2,12 @@
 Summary:	DokuWiki Eventum Plugin
 Summary(pl.UTF-8):	Wtyczka Include (dołączania) dla Eventum
 Name:		dokuwiki-plugin-%{plugin}
-Version:	20080303
-Release:	0.2
+Version:	20080910
+Release:	1
 License:	GPL v2
 Group:		Applications/WWW
-Requires:	dokuwiki >= 20070626
+URL:		https://cvs.delfi.ee/dokuwiki/plugin/eventum/
+Requires:	dokuwiki >= 20080505
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -17,13 +18,29 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_cvsmodule	dokuwiki/plugin/eventum
 
 %description
-Adds eventum link button to edit toolbar.
+Adds Eventum link button to edit toolbar.
 
 %prep
 %setup -qTc
 cd ..
 cvs -d %{_cvsroot} co -d %{name}-%{version} %{_cvsmodule}
 cd -
+
+# skip tagging if we checkouted from tag or have debug enabled
+# also make make tag only if we have integer release
+%if %{!?debug:1}%{?debug:0} && %{!?_cvstag:1}%{?_cvstag:0} && %([[ %{release} = *.* ]] && echo 0 || echo 1)
+# do tagging by version
+tag=%{name}-%(echo %{version} | tr . _)-%(echo %{release} | tr . _)
+
+cd %{_specdir}
+if [ $(cvs status -v %{name}.spec | grep -c "$tag ") != 0 ]; then
+	: "Tag $tag already exists"
+	exit 1
+fi
+cvs tag $tag %{name}.spec
+cd -
+cvs tag $tag
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
