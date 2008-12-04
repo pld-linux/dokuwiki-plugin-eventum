@@ -2,12 +2,13 @@
 Summary:	DokuWiki Eventum Plugin
 Summary(pl.UTF-8):	Wtyczka Include (dołączania) dla Eventum
 Name:		dokuwiki-plugin-%{plugin}
-Version:	20080910
+Version:	20081202
 Release:	1
 License:	GPL v2
 Group:		Applications/WWW
 URL:		https://cvs.delfi.ee/dokuwiki/plugin/eventum/
 Requires:	dokuwiki >= 20080505
+Requires:	php-pear-XML_RPC
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -20,27 +21,33 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 Adds Eventum link button to edit toolbar.
 
+Also adds extra info to Eventum interwiki links fetched from Eventum via
+XML_RPC.
+
 %prep
+# check early if build is ok to be performed
+%if %{!?debug:1}%{?debug:0} && %{!?_cvstag:1}%{?_cvstag:0} && %([[ %{release} = *.* ]] && echo 0 || echo 1)
+# break if spec is not commited
+cd %{_specdir}
+if [ "$(cvs status %{name}.spec | awk '/Status:/{print $NF}')" != "Up-to-date" ]; then
+	: "Integer build not allowed: %{name}.spec is not up-to-date with CVS"
+	exit 1
+fi
+cd -
+%endif
 %setup -qTc
 cd ..
-cvs -d %{_cvsroot} co -d %{name}-%{version} %{_cvsmodule}
+cvs -d %{_cvsroot} co %{?_cvstag:-r %{_cvstag}} -d %{name}-%{version} -P %{_cvsmodule}
 cd -
 
 %build
 # skip tagging if we checkouted from tag or have debug enabled
 # also make make tag only if we have integer release
 %if %{!?debug:1}%{?debug:0} && %{!?_cvstag:1}%{?_cvstag:0} && %([[ %{release} = *.* ]] && echo 0 || echo 1)
-
 # do tagging by version
 tag=%{name}-%(echo %{version} | tr . _)-%(echo %{release} | tr . _)
 
 cd %{_specdir}
-# break if spec is not commited
-if [ "$(cvs status %{name}.spec | awk '/Status:/{print $NF}')" != "Up-to-date" ]; then
-	: "%{name}.spec is not up-to-date with CVS"
-	exit 1
-fi
-
 if [ $(cvs status -v %{name}.spec | egrep -c "$tag[[:space:]]") != 0 ]; then
 	: "Tag $tag already exists"
 	exit 1
