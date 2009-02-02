@@ -2,7 +2,7 @@
 Summary:	DokuWiki Eventum Plugin
 Summary(pl.UTF-8):	Wtyczka Include (dołączania) dla Eventum
 Name:		dokuwiki-plugin-%{plugin}
-Version:	20081202
+Version:	20090202
 Release:	1
 License:	GPL v2
 Group:		Applications/WWW
