@@ -2,7 +2,7 @@
 Summary:	DokuWiki Eventum Plugin
 Summary(pl.UTF-8):	Wtyczka Include (dołączania) dla Eventum
 Name:		dokuwiki-plugin-%{plugin}
-Version:	20090202
+Version:	20100927
 Release:	1
 License:	GPL v2
 Group:		Applications/WWW
@@ -21,8 +21,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 Adds Eventum link button to edit toolbar.
 
-Also adds extra info to Eventum interwiki links fetched from Eventum via
-XML_RPC.
+Also adds extra info to Eventum interwiki links fetched from Eventum
+via XML_RPC.
 
 %prep
 # check early if build is ok to be performed
@@ -39,6 +39,12 @@ cd -
 cd ..
 cvs -d %{_cvsroot} co %{?_cvstag:-r %{_cvstag}} -d %{name}-%{version} -P %{_cvsmodule}
 cd -
+
+version=$(cat VERSION)
+if [ "$(echo "$version" | tr -d -)" != %{version} ]; then
+	: %%{version} mismatch
+	exit 1
+fi
 
 %build
 # skip tagging if we checkouted from tag or have debug enabled
@@ -61,6 +67,7 @@ cvs tag $tag
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{plugindir}
 cp -a . $RPM_BUILD_ROOT%{plugindir}
+rm -f $RPM_BUILD_ROOT%{plugindir}/VERSION
 find $RPM_BUILD_ROOT%{plugindir} -name CVS | xargs -r rm -rf
 
 # link issue -> eventum icon
