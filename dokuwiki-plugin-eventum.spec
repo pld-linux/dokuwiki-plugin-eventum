@@ -2,7 +2,7 @@
 Summary:	DokuWiki Eventum Plugin
 Summary(pl.UTF-8):	Wtyczka Include (dołączania) dla Eventum
 Name:		dokuwiki-plugin-%{plugin}
-Version:	20100927
+Version:	20100928
 Release:	1
 License:	GPL v2
 Group:		Applications/WWW
@@ -40,7 +40,7 @@ cd ..
 cvs -d %{_cvsroot} co %{?_cvstag:-r %{_cvstag}} -d %{name}-%{version} -P %{_cvsmodule}
 cd -
 
-version=$(cat VERSION)
+version=$(awk '/date/{print $2}' plugin.info.txt)
 if [ "$(echo "$version" | tr -d -)" != %{version} ]; then
 	: %%{version} mismatch
 	exit 1
@@ -81,6 +81,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %dir %{plugindir}
 %{plugindir}/*.php
+%{plugindir}/*.txt
 %dir %{plugindir}/lang
 %dir %{plugindir}/lang/en
 %{plugindir}/lang/en/lang.php
