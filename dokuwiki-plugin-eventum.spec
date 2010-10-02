@@ -5,8 +5,11 @@ Name:		dokuwiki-plugin-%{plugin}
 Version:	20100928
 Release:	1
 License:	GPL v2
+Source0:	http://github.com/glensc/%{name}/zipball/master#/%{plugin}.zip
+# Source0-md5:	-
 Group:		Applications/WWW
-URL:		https://cvs.delfi.ee/dokuwiki/plugin/eventum/
+URL:		http://www.dokuwiki.org/plugin:eventum
+BuildRequires:	rpmbuild(macros) >= 1.520
 Requires:	dokuwiki >= 20080505
 Requires:	php-pear-XML_RPC
 BuildArch:	noarch
@@ -14,9 +17,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		dokudir		/usr/share/dokuwiki
 %define		plugindir	%{dokudir}/lib/plugins/%{plugin}
-
-%define		_cvsroot	:ext:cvs.delfi.ee:/usr/local/cvs
-%define		_cvsmodule	dokuwiki/plugin/eventum
+%define		find_lang 	%{_usrlibrpm}/dokuwiki-find-lang.sh %{buildroot}
 
 %description
 Adds Eventum link button to edit toolbar.
@@ -25,20 +26,8 @@ Also adds extra info to Eventum interwiki links fetched from Eventum
 via XML_RPC.
 
 %prep
-# check early if build is ok to be performed
-%if %{!?debug:1}%{?debug:0} && %{!?_cvstag:1}%{?_cvstag:0} && %([[ %{release} = *.* ]] && echo 0 || echo 1)
-# break if spec is not commited
-cd %{_specdir}
-if [ "$(cvs status %{name}.spec | awk '/Status:/{print $NF}')" != "Up-to-date" ]; then
-	: "Integer build not allowed: %{name}.spec is not up-to-date with CVS"
-	exit 1
-fi
-cd -
-%endif
-%setup -qTc
-cd ..
-cvs -d %{_cvsroot} co %{?_cvstag:-r %{_cvstag}} -d %{name}-%{version} -P %{_cvsmodule}
-cd -
+%setup -qc
+mv *-%{plugin}-*/* .
 
 version=$(awk '/date/{print $2}' plugin.info.txt)
 if [ "$(echo "$version" | tr -d -)" != %{version} ]; then
@@ -46,29 +35,13 @@ if [ "$(echo "$version" | tr -d -)" != %{version} ]; then
 	exit 1
 fi
 
-%build
-# skip tagging if we checkouted from tag or have debug enabled
-# also make make tag only if we have integer release
-%if %{!?debug:1}%{?debug:0} && %{!?_cvstag:1}%{?_cvstag:0} && %([[ %{release} = *.* ]] && echo 0 || echo 1)
-# do tagging by version
-tag=%{name}-%(echo %{version} | tr . _)-%(echo %{release} | tr . _)
-
-cd %{_specdir}
-if [ $(cvs status -v %{name}.spec | egrep -c "$tag[[:space:]]") != 0 ]; then
-	: "Tag $tag already exists"
-	exit 1
-fi
-cvs tag $tag %{name}.spec
-cd -
-cvs tag $tag
-%endif
-
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{plugindir}
 cp -a . $RPM_BUILD_ROOT%{plugindir}
-rm -f $RPM_BUILD_ROOT%{plugindir}/VERSION
-find $RPM_BUILD_ROOT%{plugindir} -name CVS | xargs -r rm -rf
+
+# find locales
+%find_lang %{name}.lang
 
 # link issue -> eventum icon
 install -d $RPM_BUILD_ROOT%{dokudir}/lib/images/interwiki
@@ -77,14 +50,12 @@ ln -s eventum.gif $RPM_BUILD_ROOT%{dokudir}/lib/images/interwiki/issue.gif
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files
+%files -f %{name}.lang
 %defattr(644,root,root,755)
 %dir %{plugindir}
 %{plugindir}/*.php
 %{plugindir}/*.txt
-%dir %{plugindir}/lang
-%dir %{plugindir}/lang/en
-%{plugindir}/lang/en/lang.php
+%{plugindir}/conf
 
 # [[issue>XXX]] icon
 %{dokudir}/lib/images/interwiki/issue.gif
