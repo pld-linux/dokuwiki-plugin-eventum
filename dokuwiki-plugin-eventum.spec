@@ -1,12 +1,14 @@
+%define		subver	2010-11-05
+%define		ver		%(echo %{subver} | tr -d -)
 %define		plugin		eventum
 Summary:	DokuWiki Eventum Plugin
 Summary(pl.UTF-8):	Wtyczka Include (dołączania) dla Eventum
 Name:		dokuwiki-plugin-%{plugin}
-Version:	20101105
-Release:	1
+Version:	%{ver}
+Release:	2
 License:	GPL v2
-Source0:	http://github.com/glensc/%{name}/zipball/master#/%{plugin}.zip
-# Source0-md5:	28fb65873bec4a3456245dc57282edc9
+Source0:	http://github.com/glensc/dokuwiki-plugin-eventum/zipball/%{subver}#/%{plugin}-%{version}.zip
+# Source0-md5:	ff1da92b0781e273eeb8541920c5a08e
 Group:		Applications/WWW
 URL:		http://www.dokuwiki.org/plugin:eventum
 BuildRequires:	rpmbuild(macros) >= 1.520
