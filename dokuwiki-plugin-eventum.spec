@@ -2,11 +2,11 @@
 Summary:	DokuWiki Eventum Plugin
 Summary(pl.UTF-8):	Wtyczka Include (dołączania) dla Eventum
 Name:		dokuwiki-plugin-%{plugin}
-Version:	20101002
+Version:	20101105
 Release:	1
 License:	GPL v2
-Source0:	http://github.com/glensc/dokuwiki-plugin-eventum/zipball/2010-10-02#/%{plugin}.zip
-# Source0-md5:	457f8adca2b0eec4f4c433586210f2d3
+Source0:	http://github.com/glensc/%{name}/zipball/master#/%{plugin}.zip
+# Source0-md5:	28fb65873bec4a3456245dc57282edc9
 Group:		Applications/WWW
 URL:		http://www.dokuwiki.org/plugin:eventum
 BuildRequires:	rpmbuild(macros) >= 1.520
@@ -15,6 +15,7 @@ Requires:	php-pear-XML_RPC
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define		dokuconf	/etc/webapps/dokuwiki
 %define		dokudir		/usr/share/dokuwiki
 %define		plugindir	%{dokudir}/lib/plugins/%{plugin}
 %define		find_lang 	%{_usrlibrpm}/dokuwiki-find-lang.sh %{buildroot}
@@ -28,6 +29,7 @@ via XML_RPC.
 %prep
 %setup -qc
 mv *-%{plugin}-*/* .
+rm *-%{plugin}-*/.gitignore
 
 version=$(awk '/date/{print $2}' plugin.info.txt)
 if [ "$(echo "$version" | tr -d -)" != %{version} ]; then
@@ -43,19 +45,20 @@ cp -a . $RPM_BUILD_ROOT%{plugindir}
 # find locales
 %find_lang %{name}.lang
 
-# link issue -> eventum icon
-install -d $RPM_BUILD_ROOT%{dokudir}/lib/images/interwiki
-ln -s eventum.gif $RPM_BUILD_ROOT%{dokudir}/lib/images/interwiki/issue.gif
-
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post
+# force js/css cache refresh
+if [ -f %{dokuconf}/local.php ]; then
+	touch %{dokuconf}/local.php
+fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %dir %{plugindir}
 %{plugindir}/*.php
 %{plugindir}/*.txt
+%{plugindir}/*.css
 %{plugindir}/conf
-
-# [[issue>XXX]] icon
-%{dokudir}/lib/images/interwiki/issue.gif
+%{plugindir}/images
