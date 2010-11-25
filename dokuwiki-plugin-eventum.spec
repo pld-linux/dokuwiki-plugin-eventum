@@ -5,7 +5,7 @@ Summary:	DokuWiki Eventum Plugin
 Summary(pl.UTF-8):	Wtyczka Include (dołączania) dla Eventum
 Name:		dokuwiki-plugin-%{plugin}
 Version:	%{ver}
-Release:	2
+Release:	3
 License:	GPL v2
 Source0:	http://github.com/glensc/dokuwiki-plugin-eventum/zipball/%{subver}#/%{plugin}-%{version}.zip
 # Source0-md5:	ff1da92b0781e273eeb8541920c5a08e
