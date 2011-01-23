@@ -12,6 +12,7 @@ Source0:	http://github.com/glensc/dokuwiki-plugin-eventum/zipball/%{subver}#/%{p
 Group:		Applications/WWW
 URL:		http://www.dokuwiki.org/plugin:eventum
 BuildRequires:	rpmbuild(macros) >= 1.520
+BuildRequires:	unzip
 Requires:	dokuwiki >= 20080505
 Requires:	php-pear-XML_RPC
 BuildArch:	noarch
