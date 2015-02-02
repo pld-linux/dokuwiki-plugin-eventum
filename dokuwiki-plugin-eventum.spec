@@ -1,6 +1,7 @@
 %define		subver	2010-11-05
 %define		ver		%(echo %{subver} | tr -d -)
 %define		plugin		eventum
+%define		php_min_version 5.0.0
 Summary:	DokuWiki Eventum Plugin
 Summary(pl.UTF-8):	Wtyczka Include (dołączania) dla Eventum
 Name:		dokuwiki-plugin-%{plugin}
@@ -14,6 +15,8 @@ URL:		http://www.dokuwiki.org/plugin:eventum
 BuildRequires:	rpmbuild(macros) >= 1.520
 BuildRequires:	unzip
 Requires:	dokuwiki >= 20080505
+Requires:	php(core) >= %{php_min_version}
+Requires:	php(date)
 Requires:	php-pear-XML_RPC
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
