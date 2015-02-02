@@ -7,7 +7,7 @@ Name:		dokuwiki-plugin-%{plugin}
 Version:	%{ver}
 Release:	3
 License:	GPL v2
-Source0:	http://github.com/glensc/dokuwiki-plugin-eventum/zipball/%{subver}#/%{plugin}-%{version}.zip
+Source0:	http://github.com/glensc/dokuwiki-plugin-eventum/zipball/%{subver}?/%{plugin}-%{version}.zip
 # Source0-md5:	ff1da92b0781e273eeb8541920c5a08e
 Group:		Applications/WWW
 URL:		http://www.dokuwiki.org/plugin:eventum
