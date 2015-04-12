@@ -1,4 +1,4 @@
-%define		subver	2010-11-05
+%define		subver	2015-04-12
 %define		ver		%(echo %{subver} | tr -d -)
 %define		plugin		eventum
 %define		php_min_version 5.0.0
@@ -6,14 +6,14 @@ Summary:	DokuWiki Eventum Plugin
 Summary(pl.UTF-8):	Wtyczka Include (dołączania) dla Eventum
 Name:		dokuwiki-plugin-%{plugin}
 Version:	%{ver}
-Release:	3
+Release:	1
 License:	GPL v2
-Source0:	http://github.com/glensc/dokuwiki-plugin-eventum/zipball/%{subver}?/%{plugin}-%{version}.zip
-# Source0-md5:	ff1da92b0781e273eeb8541920c5a08e
 Group:		Applications/WWW
-URL:		http://www.dokuwiki.org/plugin:eventum
+Source0:	https://github.com/eventum/dokuwiki-plugin-eventum/releases/download/%{subver}/%{plugin}-%{subver}.tar.gz
+# Source0-md5:	f0dadf05bea1f0d896b83ef1005ecb13
+URL:		https://www.dokuwiki.org/plugin:eventum
 BuildRequires:	rpmbuild(macros) >= 1.520
-BuildRequires:	unzip
+BuildRequires:	rpm-php-pearprov >= 4.4.2-11
 Requires:	dokuwiki >= 20080505
 Requires:	php(core) >= %{php_min_version}
 Requires:	php(date)
@@ -23,6 +23,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		dokuconf	/etc/webapps/dokuwiki
 %define		dokudir		/usr/share/dokuwiki
+%define		dokucache	/var/cache/dokuwiki
 %define		plugindir	%{dokudir}/lib/plugins/%{plugin}
 %define		find_lang 	%{_usrlibrpm}/dokuwiki-find-lang.sh %{buildroot}
 
@@ -34,8 +35,7 @@ via XML_RPC.
 
 %prep
 %setup -qc
-mv *-%{plugin}-*/* .
-rm *-%{plugin}-*/.gitignore
+mv %{plugin}/* .
 
 version=$(awk '/date/{print $2}' plugin.info.txt)
 if [ "$(echo "$version" | tr -d -)" != %{version} ]; then
@@ -45,8 +45,10 @@ fi
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{plugindir}
+install -d $RPM_BUILD_ROOT{%{plugindir},%{dokucache}}
 cp -a . $RPM_BUILD_ROOT%{plugindir}
+rm -r $RPM_BUILD_ROOT%{plugindir}/XML
+touch $RPM_BUILD_ROOT%{dokucache}/%{plugin}.cache
 
 # find locales
 %find_lang %{name}.lang
@@ -59,6 +61,8 @@ rm -rf $RPM_BUILD_ROOT
 if [ -f %{dokuconf}/local.php ]; then
 	touch %{dokuconf}/local.php
 fi
+# purge eventum cache
+rm -f %{dokucache}/%{plugin}.cache
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
@@ -68,3 +72,4 @@ fi
 %{plugindir}/*.css
 %{plugindir}/conf
 %{plugindir}/images
+%ghost %{dokucache}/%{plugin}.cache
