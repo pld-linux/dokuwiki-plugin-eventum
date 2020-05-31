@@ -1,4 +1,4 @@
-%define		subver	2016-08-18
+%define		subver	2020-05-31
 %define		ver		%(echo %{subver} | tr -d -)
 %define		plugin		eventum
 %define		php_min_version 5.3.0
@@ -10,7 +10,7 @@ Release:	1
 License:	GPL v2
 Group:		Applications/WWW
 Source0:	https://github.com/eventum/dokuwiki-plugin-eventum/releases/download/%{subver}/%{plugin}-%{subver}.tar.gz
-# Source0-md5:	41d69bcbf495792bacd778a8ec1d9f6f
+# Source0-md5:	ec8c68dfe305855105e8f15048f64bf9
 URL:		https://www.dokuwiki.org/plugin:eventum
 BuildRequires:	rpmbuild(macros) >= 1.520
 BuildRequires:	rpm-php-pearprov >= 4.4.2-11
@@ -26,6 +26,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		dokucache	/var/cache/dokuwiki
 %define		plugindir	%{dokudir}/lib/plugins/%{plugin}
 %define		find_lang 	%{_usrlibrpm}/dokuwiki-find-lang.sh %{buildroot}
+%define		_noautoreq_pear	class.Eventum_RPC.php
 
 %description
 Adds Eventum link button to edit toolbar.
@@ -48,6 +49,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{plugindir},%{dokucache}}
 cp -a . $RPM_BUILD_ROOT%{plugindir}
 rm -r $RPM_BUILD_ROOT%{plugindir}/XML
+rm $RPM_BUILD_ROOT%{plugindir}/README.md
 touch $RPM_BUILD_ROOT%{dokucache}/%{plugin}.cache
 
 # find locales
@@ -66,6 +68,7 @@ rm -f %{dokucache}/%{plugin}.cache
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
+%doc README.md
 %dir %{plugindir}
 %{plugindir}/*.php
 %{plugindir}/*.txt
