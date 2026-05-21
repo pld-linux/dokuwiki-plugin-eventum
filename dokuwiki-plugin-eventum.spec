@@ -6,7 +6,7 @@ Summary:	DokuWiki Eventum Plugin
 Summary(pl.UTF-8):	Wtyczka Include (dołączania) dla Eventum
 Name:		dokuwiki-plugin-%{plugin}
 Version:	%{ver}
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		Applications/WWW
 Source0:	https://github.com/eventum/dokuwiki-plugin-eventum/releases/download/%{subver}/%{plugin}-%{subver}.tar.gz
@@ -25,7 +25,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		dokudir		/usr/share/dokuwiki
 %define		dokucache	/var/cache/dokuwiki
 %define		plugindir	%{dokudir}/lib/plugins/%{plugin}
-%define		find_lang 	%{_usrlibrpm}/dokuwiki-find-lang.sh %{buildroot}
+%define		find_lang 	%{_prefix}/lib/rpm/dokuwiki-find-lang.sh %{buildroot}
 %define		_noautoreq_pear	class.Eventum_RPC.php
 
 %description
